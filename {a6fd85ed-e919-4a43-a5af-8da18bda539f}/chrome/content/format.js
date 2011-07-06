@@ -246,6 +246,66 @@ Format.prototype.saveAsNew = function(testCase, exportTest) {
     return this.saveAs(testCase, null, exportTest);
 };
 
+/**
+ * 让用户选择需要保存的目录.
+ * @return {?string}
+ */
+Format.prototype._getExportDir = function() {
+  return FileUtils.selectDir(window);
+}
+
+/**
+ * @param {Array.<TestCase>} testCases 需要保存的测试用例.
+ * @param {boolean} exportTest true/false，貌似暂时无用.
+ */
+Format.prototype.batchSaveAsNew = function(testCases, exportTest) {
+  // 获取需要保存的目录
+  var exportDir = this._getExportDir();
+  this.log.info("exportDir = " + exportDir);
+  
+  if (exportDir) {
+    var dir = FileUtils.getFile(exportDir);
+    var sep = FileUtils.getFileSeperator(dir);
+
+    var me = this;
+    testCases.forEach(function(testCase, index){
+      var filename = exportDir + sep + testCase.getTitle();
+      if (!/\.py$/.test(filename)) {
+        filename += '.py';  // FIXME
+      }
+      
+      var file = FileUtils.getFile(filename);
+      if (file != null) {
+        me.log.info("file = " + file.path);
+        me._exportTestCase(testCase, file);
+      }
+    });
+  }
+}
+
+/**
+ * @param {TestCase} testCase 需要导出的测试用例.
+ * @param {?} file 输出文件?
+ */
+Format.prototype._exportTestCase = function(testCase, file) {
+  testCase.file = file;
+  // save the directory so we can continue to load/save files from the current suite?
+  var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+                               .createInstance( Components.interfaces.nsIFileOutputStream);
+  outputStream.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
+  var converter = this.getUnicodeConverter();
+  var text = converter.ConvertFromUnicode(this.getFormatter().format(testCase, testCase.getTitle()));
+  outputStream.write(text, text.length);
+  var fin = converter.Finish();
+  if (fin.length > 0) {
+      outputStream.write(fin, fin.length);
+  }
+  outputStream.close();
+  this.log.info("saved " + file.path);
+  testCase.lastModifiedTime = file.lastModifiedTime;
+  testCase.clearModified();
+}
+
 Format.prototype.saveAs = function(testCase, filename, exportTest) {
     //log.debug("saveAs: filename=" + filename);
     try {
@@ -260,21 +320,7 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
             file = FileUtils.getFile(filename);
         }
         if (file != null) {
-            testCase.file = file;
-            // save the directory so we can continue to load/save files from the current suite?
-            var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance( Components.interfaces.nsIFileOutputStream);
-            outputStream.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
-            var converter = this.getUnicodeConverter();
-            var text = converter.ConvertFromUnicode(this.getFormatter().format(testCase, testCase.getTitle()));
-            outputStream.write(text, text.length);
-            var fin = converter.Finish();
-            if (fin.length > 0) {
-                outputStream.write(fin, fin.length);
-            }
-            outputStream.close();
-            this.log.info("saved " + file.path);
-            testCase.lastModifiedTime = file.lastModifiedTime;
-            testCase.clearModified();
+            this._exportTestCase(testCase, file);
             return true;
         } else {
             return false;

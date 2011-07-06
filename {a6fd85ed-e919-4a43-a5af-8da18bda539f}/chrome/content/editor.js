@@ -537,9 +537,15 @@ Editor.prototype.exportTestCaseWithFormat = function(format) {
  * @param {Format} format 选中的格式
  */
 Editor.prototype.exportAllTestCaseWithFormat = function(format) {
-  this.view.syncModel();
-  this.app.getTestSuite().
-  alert("HAHAHAHAHAH");
+  var me = this;
+
+  var testCases = [];
+  me.view.syncModel();
+  me.app.getTestSuite().getAllTestCase().forEach(function(testCase, index){
+    // me.log.info(format.getSourceForTestCase(testCase.content));
+    testCases.push(testCase.content);
+  });
+  format.batchSaveAsNew(testCases, true);
 }
 
 Editor.prototype.exportTestSuiteWithFormat = function(format) {

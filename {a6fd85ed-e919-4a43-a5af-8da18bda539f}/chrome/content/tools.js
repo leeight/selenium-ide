@@ -26,30 +26,30 @@ if (this.SeleniumIDE && SeleniumIDE.Preferences) {
 }
 
 function Log(category) {
-	var log = this;
-	var self = this;
-	this.category = category;
-	
-	function LogLevel(level, name) {
-		this.level = level;
-		this.name = name;
-		var self = this;
-		log[name.toLowerCase()] = function(msg) { log.log(self, msg) };
-	}
+  var log = this;
+  var self = this;
+  this.category = category;
+  
+  function LogLevel(level, name) {
+    this.level = level;
+    this.name = name;
+    var self = this;
+    log[name.toLowerCase()] = function(msg) { log.log(self, msg) };
+  }
 
-	this.DEBUG = new LogLevel(1, "DEBUG");
-	this.INFO = new LogLevel(2, "INFO");
-	this.WARN = new LogLevel(3, "WARN");
-	this.ERROR = new LogLevel(4, "ERROR");
+  this.DEBUG = new LogLevel(1, "DEBUG");
+  this.INFO = new LogLevel(2, "INFO");
+  this.WARN = new LogLevel(3, "WARN");
+  this.ERROR = new LogLevel(4, "ERROR");
 
-	this.log = function(level, msg) {
-		var threshold = this[this._getThreshold()];
-		if (level.level >= threshold.level) {
-			this._write("Selenium IDE [" + level.name + "] " + 
+  this.log = function(level, msg) {
+    var threshold = this[this._getThreshold()];
+    if (level.level >= threshold.level) {
+      this._write("Selenium IDE [" + level.name + "] " + 
                       this._formatDate(new Date()) + " " +
-					  self.category + ": " + msg);
-		}
-	}
+            self.category + ": " + msg);
+    }
+  }
 }
 
 Log.prototype = {
@@ -83,7 +83,7 @@ Log.prototype = {
 
     _write: function(message) {
         var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-		    .getService(Components.interfaces.nsIConsoleService);
+        .getService(Components.interfaces.nsIConsoleService);
         if (consoleService != null) {
             consoleService.logStringMessage(message);
         }
@@ -91,21 +91,21 @@ Log.prototype = {
 }
 
 function showFilePicker(window, title, mode, defaultDirPrefName, handler) {
-	var nsIFilePicker = Components.interfaces.nsIFilePicker;
-	var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-	fp.init(window, title, mode);
-    var defaultDir = Preferences.getString(defaultDirPrefName);
-    if (defaultDir) {
-        fp.displayDirectory = FileUtils.getFile(defaultDir);
-    }
-	fp.appendFilters(nsIFilePicker.filterHTML | nsIFilePicker.filterAll);
-    var res = fp.show();
-    if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
-        Preferences.setString(defaultDirPrefName, fp.file.parent.path);
-        return handler(fp);
-    } else {
-        return null;
-    }
+  var nsIFilePicker = Components.interfaces.nsIFilePicker;
+  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+  fp.init(window, title, mode);
+  var defaultDir = Preferences.getString(defaultDirPrefName);
+  if (defaultDir) {
+    fp.displayDirectory = FileUtils.getFile(defaultDir);
+  }
+  fp.appendFilters(nsIFilePicker.filterHTML | nsIFilePicker.filterAll);
+  var res = fp.show();
+  if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
+    Preferences.setString(defaultDirPrefName, fp.file.parent.path);
+    return handler(fp);
+  } else {
+    return null;
+  }
 }
 
 /**
@@ -126,38 +126,38 @@ function openTabOrWindow(url)
 }
 
 function exactMatchPattern(string) {
-	if (string != null && (string.match(/^\w*:/) || string.indexOf('?') >= 0 || string.indexOf('*') >= 0)) {
-		return "exact:" + string;
-	} else {
-		return string;
-	}
+  if (string != null && (string.match(/^\w*:/) || string.indexOf('?') >= 0 || string.indexOf('*') >= 0)) {
+    return "exact:" + string;
+  } else {
+    return string;
+  }
 }
 
 function LineReader(text) {
-	this.text = text;
+  this.text = text;
 }
 
 LineReader.prototype.read = function() {
-	if (this.text.length > 0) {
-		var line = /.*(\r\n|\r|\n)?/.exec(this.text)[0];
-		this.text = this.text.substr(line.length);
-		line = line.replace(/\r?\n?$/, '');
-		return line;
-	} else {
-		return null;
-	}
+  if (this.text.length > 0) {
+    var line = /.*(\r\n|\r|\n)?/.exec(this.text)[0];
+    this.text = this.text.substr(line.length);
+    line = line.replace(/\r?\n?$/, '');
+    return line;
+  } else {
+    return null;
+  }
 }
 
 var StringUtils = {};
 
 StringUtils.underscore = function(text) {
-	return text.replace(/[A-Z]/g, function(str) {
-			return '_' + str.toLowerCase();
-		});
+  return text.replace(/[A-Z]/g, function(str) {
+      return '_' + str.toLowerCase();
+    });
 }
 
 String.prototype.startsWith = function(str) {
-	return (this.match("^" + str) == str)
+  return (this.match("^" + str) == str)
 }
 
 if(typeof(String.prototype.trim) === "undefined")

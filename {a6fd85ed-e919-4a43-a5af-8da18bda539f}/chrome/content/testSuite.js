@@ -16,7 +16,7 @@
 
 function TestSuite() {
     this.tests = [];
-    this.modified = false;	//Samit: Enh: Support for change detection
+    this.modified = false;  //Samit: Enh: Support for change detection
 }
 
 TestSuite.TEST_SUITE_DIRECTORY_PREF = "testSuiteDirectory";
@@ -63,7 +63,7 @@ TestSuite.loadInputStream = function(input) {
 TestSuite.header = 
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n' +
-	'<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n' +
+  '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n' +
     "<head>\n" +
     '  <meta content="text/html; charset=UTF-8" http-equiv="content-type" />' + "\n" +
     "  <title>Test Suite</title>\n" +
@@ -78,14 +78,14 @@ TestSuite.prototype = {
         var testCase = new TestSuite.TestCase(this);
         testCase.content = content;
         this.tests.push(testCase);
-        this.modified = true;	//Samit: Enh: Mark as changed (Issue 586)
+        this.modified = true; //Samit: Enh: Mark as changed (Issue 586)
         this.notify("testCaseAdded", testCase);
     },
 
     remove: function(testCase) {
         if (this.tests.length > 1) {
             if (this.tests.delete(testCase)) {
-            	this.modified = true;	//Samit: Enh: Mark as changed (Issue 586)
+              this.modified = true; //Samit: Enh: Mark as changed (Issue 586)
                 this.notify("testCaseRemoved", testCase);
             }
         } else {
@@ -94,7 +94,7 @@ TestSuite.prototype = {
     },
 
     move: function(fromIndex, toIndex) {
-    	//Samit: Ref: Move is a fundamental part of the testSuite like add and remove and should be supported with corresponding event
+      //Samit: Ref: Move is a fundamental part of the testSuite like add and remove and should be supported with corresponding event
         if (this.tests.length > 1) {
             var removedRow = this.tests.splice(fromIndex, 1)[0];
             this.tests.splice(toIndex, 0, removedRow);
@@ -105,17 +105,17 @@ TestSuite.prototype = {
 
     //Samit: Enh: A temp suite is a suite that is not saved and has a single test case 
     isTempSuite: function() {
-    	if (this.file || this.tests.length > 1) {
-			//Persisted suites and suites with more than one test cases are not temp suites
-    		return false;
-    	}
-    	//Non-persisted suites with a single test case is a temp suite
-    	return true;
+      if (this.file || this.tests.length > 1) {
+      //Persisted suites and suites with more than one test cases are not temp suites
+        return false;
+      }
+      //Non-persisted suites with a single test case is a temp suite
+      return true;
     },
     
     //Samit: Enh: Provide suite modified status, contained test case modified status is not considered  
     isModified: function() {
-		return this.modified;
+        return this.modified;
     },
 
     save: function(newFile) {
@@ -139,7 +139,7 @@ TestSuite.prototype = {
             output.write(fin, fin.length);
         }
         output.close();
-        this.modified = false;	//Samit: Enh: Mark as saved (Issue 586)
+        this.modified = false;  //Samit: Enh: Mark as saved (Issue 586)
         return true;
     },
 
@@ -174,6 +174,13 @@ TestSuite.prototype = {
             copy[prop] = this[prop];
         }
         return copy;
+    },
+
+    /**
+     * @return {Array.<TestSuite.TestCase>} TestCase的包装.
+     */
+    getAllTestCase : function() {
+        return this.tests;
     }
 }
 
@@ -196,15 +203,14 @@ TestSuite.TestCase.prototype = {
         }
         
         try {
-		file.appendRelativePath(filename);
-		return file;
-	}catch (e) {
-            
-		if (e.name && e.name == "NS_ERROR_FILE_UNRECOGNIZED_PATH") {
-			//Samit: Fix: workaround security exception due to ".." in path using our own version
-			return FileUtils.appendRelativePath(file, filename);
-		}
-	}
+          file.appendRelativePath(filename);
+          return file;
+        }catch (e) {
+          if (e.name && e.name == "NS_ERROR_FILE_UNRECOGNIZED_PATH") {
+            //Samit: Fix: workaround security exception due to ".." in path using our own version
+            return FileUtils.appendRelativePath(file, filename);
+          }
+        }
         return null;
      },
 

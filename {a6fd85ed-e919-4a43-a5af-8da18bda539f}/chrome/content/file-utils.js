@@ -17,18 +17,44 @@
 var FileUtils = {
     getProfileDir: function() {
         return Components.classes["@mozilla.org/file/directory_service;1"]
-        .getService(Components.interfaces.nsIProperties)
-        .get("ProfD", Components.interfaces.nsILocalFile);
+                         .getService(Components.interfaces.nsIProperties)
+                         .get("ProfD", Components.interfaces.nsILocalFile);
     },
-	
+  
     getTempDir: function() {
         return Components.classes["@mozilla.org/file/directory_service;1"]
-        .getService(Components.interfaces.nsIProperties)
-        .get("TmpD", Components.interfaces.nsILocalFile);
+                         .getService(Components.interfaces.nsIProperties)
+                         .get("TmpD", Components.interfaces.nsILocalFile);
     },
-	
+  
+    /**
+     * @param {Window} window The nsIDOMWindow parent. This dialog will be dependent on this parent.
+     * @param {string=} 对话框的标题.
+     * @return {?string} 选择的目录.
+     */
+    selectDir : function(window, opt_title) {
+      var nsIFilePicker = Components.interfaces.nsIFilePicker;
+      var fp = Components.classes["@mozilla.org/filepicker;1"]
+                         .createInstance(nsIFilePicker);
+      var title = opt_title || "请选择需要一个目录";
+      fp.init(window, title, nsIFilePicker.modeGetFolder);
+      
+      var res = fp.show();
+      if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
+        var file = fp.file;
+        // Get the path as string. Note that you usually won't 
+        // need to work with the string paths.
+        var path = fp.file.path;
+        // work with returned nsILocalFile...
+        return path;
+      } else {
+        return null;
+      }
+    },
+
     getUnicodeConverter: function(encoding) {
-        var unicodeConverter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+        var unicodeConverter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+                                         .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
         try {
             unicodeConverter.charset = encoding;
         } catch (error) {
@@ -36,25 +62,30 @@ var FileUtils = {
         }
         return unicodeConverter;
     },
-	
+  
     openFileOutputStream: function(file) {
-        var stream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+        var stream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+                               .createInstance(Components.interfaces.nsIFileOutputStream);
         stream.init(file, 0x02 | 0x08 | 0x20, 420, 0);
         return stream;
     },
 
     openFileInputStream: function(file) {
-        var stream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
+        var stream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+                               .createInstance(Components.interfaces.nsIFileInputStream);
         stream.init(file, 0x01, 00004, 0);
-        var sis = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
+        var sis = Components.classes["@mozilla.org/scriptableinputstream;1"]
+                            .createInstance(Components.interfaces.nsIScriptableInputStream);
         sis.init(stream);
         return sis;
     },
 
     openURLInputStream: function(url) {
-        const ioService = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
+        const ioService = Components.classes['@mozilla.org/network/io-service;1']
+                                    .getService(Components.interfaces.nsIIOService);
         var stream = ioService.newChannelFromURI(ioService.newURI(url, null, null)).open();
-        var sis = Components.classes['@mozilla.org/scriptableinputstream;1'].createInstance(Components.interfaces.nsIScriptableInputStream);
+        var sis = Components.classes['@mozilla.org/scriptableinputstream;1']
+                            .createInstance(Components.interfaces.nsIScriptableInputStream);
         sis.init(stream);
         return sis;
     },
@@ -74,13 +105,15 @@ var FileUtils = {
     },
 
     getFile: function(path) {
-        var file = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
+        var file = Components.classes['@mozilla.org/file/local;1']
+                             .createInstance(Components.interfaces.nsILocalFile);
         file.initWithPath(path);
         return file;
     },
 
     fileURI: function(file) {
-        return Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).
+        return Components.classes["@mozilla.org/network/io-service;1"]
+                         .getService(Components.interfaces.nsIIOService).
         newFileURI(file).spec;
     },
 
