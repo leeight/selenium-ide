@@ -10,7 +10,7 @@
         <em:type>2</em:type>
         <em:homepageURL>http://seleniumhq.org/projects/ide</em:homepageURL>
         <em:optionsURL>chrome://selenium-ide/content/optionsDialog.xul</em:optionsURL>
-        <em:updateURL>https://addons.seleniumhq.org/se-ide/update.rdf</em:updateURL>
+        <em:updateURL>http://fe.baidu.com/repos/doc/sdcfe/tools/rdf/se-ide.rdf</em:updateURL>
         <em:iconURL>chrome://selenium-ide/content/images/selenium-ide-logo32.png</em:iconURL>
         <em:unpack>true</em:unpack>
 
