@@ -114,6 +114,8 @@ SeleniumIDE.Preferences = {
 SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
     encoding: "UTF-8",
 
+    user: "leeight <liyubei@baidu.com>",
+
     // This should be called 'userExtensionsPaths', but it is left for backward compatibility.
     userExtensionsURL:
     "",

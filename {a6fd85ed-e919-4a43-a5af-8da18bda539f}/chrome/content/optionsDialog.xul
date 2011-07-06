@@ -29,7 +29,7 @@ limitations under the License.
         onload="loadOptions()"
         title="&options.title;"
         width="520"
-        height="600"
+        height="640"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
@@ -62,13 +62,20 @@ limitations under the License.
           <textbox id="timeout" multiline="false" oninput="validate()"/>
           <label id="timeoutError" value="" class="error"/>
         </hbox>
+        
+        <separator class="thin"/>
+        <description>&options.user;</description>
+        <hbox align="center">
+          <textbox id="user" multiline="false" oninput="validate()"/>
+          <label id="userError" value="" class="error"/>
+        </hbox>
 
         <separator class="thin"/>
         <description>&options.userExtensionsPaths.description;</description>
         <hbox align="center">
           <textbox id="userExtensionsURL" multiline="false" flex="1"/>
           <button label="&options.browse;" oncommand="chooseFile('userExtensionsURL')"/>
-  <button id="reload" label="&options.user-ext.reload.label;" class="icon" tooltiptext="&options.user-ext.reload.tooltip;" oncommand="reloadUserExtFile()" disabled="true"/>
+          <button id="reload" label="&options.user-ext.reload.label;" class="icon" tooltiptext="&options.user-ext.reload.tooltip;" oncommand="reloadUserExtFile()" disabled="true"/>
         </hbox>
 
         <separator class="thin"/>

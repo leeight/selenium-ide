@@ -1,5 +1,6 @@
 <!ENTITY options.title "Selenium IDE Options">
 <!ENTITY options.encoding.description "Encoding of test files">
+<!ENTITY options.user "User and email">
 <!ENTITY options.timeout.description "Default timeout value of recorded command in milliseconds (30s = 30000ms)">
 <!ENTITY options.userExtensionsPaths.description "Selenium Core extensions (user-extensions.js)">
 <!ENTITY options.ideExtensionsPaths.description "Selenium IDE extensions">

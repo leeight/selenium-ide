@@ -287,8 +287,17 @@ var validations = {
 		return result;
 	},
 
+  user: function(value) {
+    // pattern is leeight <liyubei@baidu.com>
+    if (!/^\w+\s+<\w+@\w+\.\w+>$/.test(value)) {
+      return Message("error.invalidUser");
+    } else {
+      return '';
+    }
+  },
+
 	timeout: function(value) {
-		if (value.match(/^\d+$/)) {
+    if (/^\d+$/.test(value)) {
 			return '';
 		} else {
 			return Message("error.timeoutNotNumber");
